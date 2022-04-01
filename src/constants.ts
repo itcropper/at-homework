@@ -25,3 +25,4 @@ export enum PRICE_LEVEL {
 
 export const LOCAL_STORAGE_KEY = "AT_Favorite_Places";
 export const smallScreenMax = 768;
+export const googleApiKey = process.env.REACT_APP_PLACES_KEY;

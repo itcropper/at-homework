@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-
-const googleApiKey = process.env.REACT_APP_PLACES_KEY;
+import {googleApiKey} from './constants';
 
 export function getLocation(onLocated: (response: any) => void, error: (response: any) => void) {
     if (navigator.geolocation) {

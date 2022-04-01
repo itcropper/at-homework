@@ -41,7 +41,11 @@ As a more pragmatic engineer, my approach is more measured. Not all projects nee
 
 ## Available Scripts
 
-In the project directory, you can run:
+<b style="color:red">BEFORE RUNNING ANYTHING</b>
+Please make sure the project has the environment file
+`.env` with the google api key called `REACT_APP_PLACES_KEY`
+
+
 
 ### `npm start`
 
