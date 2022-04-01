@@ -1,7 +1,7 @@
 import { FC, useRef, useEffect } from "react";
 interface IMapProps {
     onMapLoaded: (map: google.maps.Map) => void,
-    coordinates: { latitude: number, longitude: number } | undefined,
+    coordinates: { lat: number, lng: number } | undefined,
     scriptsReady: boolean
 }
 
@@ -12,22 +12,21 @@ export const Map: FC<IMapProps> = (props: IMapProps) => {
     const { coordinates, onMapLoaded, scriptsReady } = props;
 
     useEffect(() => {
-        if (coordinates && scriptsReady) {
 
-            const coords = new google.maps.LatLng(
-                coordinates.latitude,
-                coordinates.longitude
-            )
+        let coords;
+        if(coordinates){
+            coords = new google.maps.LatLng(coordinates)
+        }
+        if(map.current != null && coords) {
+            map.current.setCenter(coords);
+        } else if (coords && scriptsReady) {
 
             map.current = new google.maps.Map(mapRef.current!, {
                 center: coords,
                 zoom: 13,
                 disableDefaultUI: true,
             });
-
-            map.current?.getBounds()
             onMapLoaded(map.current);
-            
         }
     }, [coordinates, scriptsReady]);
 

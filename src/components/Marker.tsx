@@ -33,10 +33,15 @@ export const Marker: FunctionComponent<IMarker> = (props: IMarker) => {
             }
         }
 
+        const closeWindow = (event:any) =>  infoWindow?.close(); 
+
         const clickListener = marker.addListener("click", setSelectedMarker)
+
+        const mapClickListener = google.maps.event.addListener(map, "click", closeWindow);
 
         return () => {
             google.maps.event.removeListener(clickListener);
+            google.maps.event.removeListener(mapClickListener);
             marker.setMap(null);
         };
     }, [props])

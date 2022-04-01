@@ -2,6 +2,7 @@ import {FC, useEffect} from 'react';
 
 interface ISearchService {
     map?: google.maps.Map,
+    centeredAround: {} | undefined,
     onRequestFulfilled: (response: google.maps.places.PlaceResult[]) => void,
     query?: string,
 }
@@ -9,7 +10,7 @@ interface ISearchService {
 
 export const SearchService: FC<ISearchService> = (props: ISearchService) => {
 
-    const {map, query} = props;
+    const {map, query, centeredAround} = props;
 
     useEffect(() => {
         if(!map){
@@ -41,7 +42,7 @@ export const SearchService: FC<ISearchService> = (props: ISearchService) => {
             props.onRequestFulfilled([]);
           });
 
-    }, [map, query])
+    }, [map, query, centeredAround])
 
     return (
         <div></div>

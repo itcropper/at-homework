@@ -17,4 +17,7 @@ ReactDOM.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-console.log("%cThis is a green text", "color:"+BRAND.Primary);
+console.clear();
+console.log(`%cWHOA! You like trails AND you know you're way around the console?\nYou should be working for us at `, 'font-family:monospace; font-size: 20px')
+console.log(`%cAllTrails`, `color:${BRAND.Primary}; font-family:monospace; font-size: 30px`);
+console.log('https://www.alltrails.com/careers');

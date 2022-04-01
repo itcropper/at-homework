@@ -4,19 +4,20 @@ import { useState, useRef, useEffect } from "react"
 import logo from './assets/logo.svg';
 import './App.css';
 import { DisplayToggle, Map, ResultCard, Filter, SearchService, Marker } from "./components";
-import { BRAND, VIEW , LOCAL_STORAGE_KEY, smallScreenMax} from './constants';
-import { IResultInfo } from './Interfaces'
+import { VIEW , LOCAL_STORAGE_KEY, smallScreenMax} from './constants';
 import { loadGoogleScripts, getLocation, useWindowSize } from './utilities';
 
 function App() {
 
   const size = useWindowSize();
+  const inforWindoRef = useRef<google.maps.InfoWindow>();
+
   const [view, setView] = useState(VIEW.LIST);
   const [results, setResults] = useState<google.maps.places.PlaceResult[]>([]);
   const [queryText, setQueryText] = useState('');
   const [map, setMap] = useState<google.maps.Map>();
   const [scriptsReady, setScriptsReady] = useState(false);
-  const [coordinates, setCoordinates] = useState<{ latitude: number, longitude: number, radius?: number }>();
+  const [coordinates, setCoordinates] = useState<{ lat: number, lng: number, radius?: number }>();
   const [favorites, setFavorites] = useState<{ [place_id: string | number]: boolean }>(() => {
     const lsFavorites = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (lsFavorites) {
@@ -25,14 +26,15 @@ function App() {
     return {};
   })
 
-  const inforWindoRef = useRef<google.maps.InfoWindow>();
+  
 
   useEffect(() => {
     loadGoogleScripts(() => setScriptsReady(true))
 
     getLocation(response => {
-      setCoordinates({ latitude: response.coords.latitude, longitude: response.coords.longitude })
-    }, console.log);
+        setCoordinates({ lat: response.coords.latitude, lng: response.coords.longitude })
+      }, 
+      console.warn);
 
     return () => { }
   }, []);
@@ -54,6 +56,19 @@ function App() {
     setFavorites(updatedFavorites);
   }
 
+  useEffect(() => {
+
+  }, [queryText])
+
+  const search = (text: string) => {
+    const center = map?.getCenter();
+
+    setQueryText(text);
+    setCoordinates({
+      lat: center?.lat()!,
+      lng: center?.lng()!
+    })
+  }
 
   /** Render */
   return (
@@ -62,12 +77,12 @@ function App() {
         <div className="flex items-center flex-col md:flex-row md:justify-between">
           <img src={logo} className="h-8 my-6" alt="logo" />
           <div className="w-11/12 md:mr-8 md:w-80">
-            <Filter onFilter={setQueryText} />
+            <Filter onFilter={search} />
           </div>
         </div>
-
       </nav>
-      <SearchService onRequestFulfilled={setResults} map={map} query={queryText} />
+
+      <SearchService onRequestFulfilled={setResults} map={map} query={queryText} centeredAround={coordinates} />
       <main className="pt-32 md:pt-18 md:flex md:flex-row">
 
         <div className={view === VIEW.LIST || size.width! >= smallScreenMax ? 'block md:w-96 md:overflow-y-auto md:relative' : 'hidden'}>
@@ -76,7 +91,7 @@ function App() {
               {
                 results.map((place, i) => <ResultCard key={i} businessInfo={place} isFavorite={favorites[place.place_id!]} onFavoritesChanged={updateFavorites} />)
               }
-              {results.length === 0 && <div className="">No Results. Try looking for something else.</div> }
+              {results.length === 0 && map != null && <div className="">No Results. Try looking for something else.</div> }
             </div>
           </div>
         </div>

@@ -1,6 +1,5 @@
 import React, {FunctionComponent, useEffect, useState, useContext} from 'react';
 import { BRAND } from '../constants';
-import {IResultInfo} from '../Interfaces';
 
 interface IResultCard extends React.HTMLAttributes<HTMLButtonElement>{
     businessInfo: google.maps.places.PlaceResult,
@@ -37,10 +36,10 @@ export const ResultCard: FunctionComponent<IResultCard> = (props: IResultCard) =
     let thumbnail = props.businessInfo.photos && props.businessInfo.photos[0]?.getUrl() || '';
 
     return (
-        <div className={`px-2 h-28 flex mb-4 w-11/12 bg-white divide-y divide-gray-200 ${props.forInfoWindow ? "" : "rounded-lg shadow"}`} data-cy="result-card">
+        <div className={`px-2  h-28 flex bg-white divide-y divide-gray-200 ${props.forInfoWindow ? "" : "rounded-lg shadow mb-4 w-11/12 "}`} data-cy="result-card">
         <div className="w-full flex items-center justify-between p-2 ">
             <img className={`max-h-24 rounded ${props.forInfoWindow ? "w-2/5" : "w-1/6"}`} src={thumbnail} />
-            <div className="content-stuff w-1/2">
+            <div className={`content-stuff w-1/2 ${props.forInfoWindow ? "flex flex-col justify-between h-3/4" : ''}`}>
                 <p className="text-gray-800 font-medium line-clamp-2">{name}</p>
                 {
                     rating && user_ratings_total && 
