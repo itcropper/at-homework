@@ -22,3 +22,6 @@ export enum PRICE_LEVEL {
     "EXPENSIVE" = 3,
     "VERY_EXPENSIVE" = 4
 }
+
+export const LOCAL_STORAGE_KEY = "AT_Favorite_Places";
+export const smallScreenMax = 768;

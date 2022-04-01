@@ -1,12 +1,9 @@
-import { useEffect, useRef} from 'react';
-import { FunctionComponent } from 'react';
-import { IResultInfo } from "../Interfaces"
+import { useEffect, useRef, FunctionComponent} from 'react';
 import {ResultCard} from './ResultCard'
 
 interface IMarker {
     map: google.maps.Map,
-    coordinates?: { lat: number, lng: number },
-    data: IResultInfo,
+    data: google.maps.places.PlaceResult,
     infoWindow: google.maps.InfoWindow | undefined,
     selected?: boolean
 }
@@ -14,14 +11,17 @@ interface IMarker {
 
 export const Marker: FunctionComponent<IMarker> = (props: IMarker) => {
 
-    const {infoWindow} = props;
-
     const cardRef = useRef<HTMLDivElement>(null);
 
+    const {data, map, infoWindow, selected} = props;
+
     useEffect(() => {
+        if(!data || !data.geometry){
+            return;
+        }
         const marker = new google.maps.Marker({
-            position: props.coordinates,
-            map: props.map,
+            position: data.geometry?.location,
+            map: map,
         });
 
         const setSelectedMarker = () => {

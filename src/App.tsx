@@ -1,32 +1,22 @@
 
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import logo from './assets/logo.svg';
 import './App.css';
-import { BRAND, VIEW } from './constants';
-import { DisplayToggle } from './components/DisplayToggle';
-import { Map } from './components/Map'
-import { ResultCard } from './components/ResultCard';
-import { Filter } from './components/Filter';
-import { useEffect } from "react";
+import { DisplayToggle, Map, ResultCard, Filter, SearchService, Marker } from "./components";
+import { BRAND, VIEW , LOCAL_STORAGE_KEY, smallScreenMax} from './constants';
 import { IResultInfo } from './Interfaces'
-import { SearchService } from "./components/SearchService";
 import { loadGoogleScripts, getLocation, useWindowSize } from './utilities';
-import { Marker } from './components/Marker'
-
-const LOCAL_STORAGE_KEY = "AT_Favorite_Places";
-const smallScreenMax = 768;
 
 function App() {
 
   const size = useWindowSize();
   const [view, setView] = useState(VIEW.LIST);
-  const [results, setResults] = useState<IResultInfo[]>([]);
+  const [results, setResults] = useState<google.maps.places.PlaceResult[]>([]);
   const [queryText, setQueryText] = useState('');
   const [map, setMap] = useState<google.maps.Map>();
   const [scriptsReady, setScriptsReady] = useState(false);
   const [coordinates, setCoordinates] = useState<{ latitude: number, longitude: number, radius?: number }>();
-  const [isLoaded, setIsLoaded] = useState(false);
   const [favorites, setFavorites] = useState<{ [place_id: string | number]: boolean }>(() => {
     const lsFavorites = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (lsFavorites) {
@@ -41,16 +31,11 @@ function App() {
     loadGoogleScripts(() => setScriptsReady(true))
 
     getLocation(response => {
-      setCoordinates({ latitude: response.coords.latitude, longitude: response.coords.longitude });      
+      setCoordinates({ latitude: response.coords.latitude, longitude: response.coords.longitude })
     }, console.log);
+
     return () => { }
   }, []);
-
-  useEffect(() => {
-    if(scriptsReady && coordinates){
-      setIsLoaded(true);
-    }
-  }, [scriptsReady, coordinates])
 
   useEffect(() => {
     if (scriptsReady) {
@@ -69,13 +54,10 @@ function App() {
     setFavorites(updatedFavorites);
   }
 
+
+  /** Render */
   return (
     <div className={`App overflow-y-hidden h-min-screen bg-gray-100 h-screen`}>
-      {!isLoaded && <div className={`loading-screen fixed w-full h-full bg-gray-500 z-20`}>
-      <div className="flex items-center justify-center items-center h-full">
-    <div className="w-40 h-40 border-t-4 border-b-4  rounded-full animate-spin"></div>
-</div>
-      </div> }
       <nav className="bg-white h-32 fixed md:block md:h-20 w-full shadow z-10">
         <div className="flex items-center flex-col md:flex-row md:justify-between">
           <img src={logo} className="h-8 my-6" alt="logo" />
@@ -85,15 +67,16 @@ function App() {
         </div>
 
       </nav>
-      <SearchService onRequestFulfilled={setResults} map={map} query={queryText} coordinates={coordinates} />
+      <SearchService onRequestFulfilled={setResults} map={map} query={queryText} />
       <main className="pt-32 md:pt-18 md:flex md:flex-row">
 
         <div className={view === VIEW.LIST || size.width! >= smallScreenMax ? 'block md:w-96 md:overflow-y-auto md:relative' : 'hidden'}>
           <div className="flex flex-col items-center w-full md:absolute">
             <div className="result-container pt-4 md:pt-0 w-full flex  max-w-lg justify-center flex-col items-center">
               {
-                results.map((place, i) => <ResultCard key={i} businessInfo={place} isFavorite={favorites[place.place_id]} onFavoritesChanged={updateFavorites} />)
+                results.map((place, i) => <ResultCard key={i} businessInfo={place} isFavorite={favorites[place.place_id!]} onFavoritesChanged={updateFavorites} />)
               }
+              {results.length === 0 && <div className="">No Results. Try looking for something else.</div> }
             </div>
           </div>
         </div>
@@ -106,7 +89,6 @@ function App() {
               result => <Marker
                 key={result.place_id}
                 infoWindow={inforWindoRef.current}
-                coordinates={coordinates && { lat: result.geometry.location.lat(), lng: result.geometry.location.lng(), }}
                 map={map}
                 data={result} />)
           }
@@ -121,7 +103,7 @@ function App() {
   );
 }
 
-console.log("%cThis is a green text", "color:"+BRAND.Primary);
+
 
 
 export default App;

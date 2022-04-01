@@ -21,7 +21,8 @@ export const DisplayToggle: React.FunctionComponent<IDisplayToggle> = (props:IDi
         <button 
             style={{backgroundColor:  BRAND.Primary}} 
             onClick={(e) => setView(view == VIEW.MAP ? VIEW.LIST : VIEW.MAP)}
-            className={`p-1 mr-2 w-24 h-12 text-white stroke-white flex justify-center items-center px-2.5 py-1.5 shadow-sm font-medium rounded text-base hover:bg-gray-50 focus:outline-none`}>
+            className={`p-1 mr-2 w-24 h-12 text-white stroke-white flex justify-center items-center px-2.5 py-1.5 shadow-sm font-medium rounded text-base hover:bg-gray-50 focus:outline-none`}
+            data-cy="toggle-view-button">
         <img className="w-6 h-6 mr-2 stroke-white" src={view === VIEW.MAP ? list : marker} />
         {
             view == VIEW.MAP 
