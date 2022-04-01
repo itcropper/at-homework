@@ -26,6 +26,7 @@ function App() {
   const [map, setMap] = useState<google.maps.Map>();
   const [scriptsReady, setScriptsReady] = useState(false);
   const [coordinates, setCoordinates] = useState<{ latitude: number, longitude: number, radius?: number }>();
+  const [isLoaded, setIsLoaded] = useState(false);
   const [favorites, setFavorites] = useState<{ [place_id: string | number]: boolean }>(() => {
     const lsFavorites = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (lsFavorites) {
@@ -36,17 +37,20 @@ function App() {
 
   const inforWindoRef = useRef<google.maps.InfoWindow>();
 
-
-
   useEffect(() => {
     loadGoogleScripts(() => setScriptsReady(true))
 
     getLocation(response => {
-      setCoordinates({ latitude: response.coords.latitude, longitude: response.coords.longitude })
+      setCoordinates({ latitude: response.coords.latitude, longitude: response.coords.longitude });      
     }, console.log);
-
     return () => { }
   }, []);
+
+  useEffect(() => {
+    if(scriptsReady && coordinates){
+      setIsLoaded(true);
+    }
+  }, [scriptsReady, coordinates])
 
   useEffect(() => {
     if (scriptsReady) {
@@ -66,7 +70,12 @@ function App() {
   }
 
   return (
-    <div className={`App overflow-y-hidden h-min-screen bg-gray-100 h-screen `}>
+    <div className={`App overflow-y-hidden h-min-screen bg-gray-100 h-screen`}>
+      {!isLoaded && <div className={`loading-screen fixed w-full h-full bg-gray-500 z-20`}>
+      <div className="flex items-center justify-center items-center h-full">
+    <div className="w-40 h-40 border-t-4 border-b-4  rounded-full animate-spin"></div>
+</div>
+      </div> }
       <nav className="bg-white h-32 fixed md:block md:h-20 w-full shadow z-10">
         <div className="flex items-center flex-col md:flex-row md:justify-between">
           <img src={logo} className="h-8 my-6" alt="logo" />
