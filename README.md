@@ -1,6 +1,8 @@
 # All Trails Team is Headed to Lunch
 
 ![alt text](https://github.com/itcropper/at-homework/blob/main/public/AT-logo.svg?raw=true)
+
+---------
 ![image](https://user-images.githubusercontent.com/1205876/161344684-5339beda-95c7-4c09-88f5-0d7e0813c6cb.png)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
