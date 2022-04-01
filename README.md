@@ -1,5 +1,7 @@
 # All Trails Team is Headed to Lunch
 
+![alt text](https://github.com/itcropper/at-homework/blob/main/public/AT-logo.svg?raw=true)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## My thoughts
